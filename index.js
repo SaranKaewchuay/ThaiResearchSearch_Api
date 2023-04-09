@@ -18,8 +18,9 @@ app.get("/getsolr/:keyword", async (req, res) => {
   const keyword = req.params.keyword;
   try {
     const data = await sendRequestGetJson(
-      `http://localhost:8983/solr/thai_research/select?facet.field=ProjectYearSubmit&facet.field=OECD1&facet.field=SubmitDepProvinceTH&facet=true&indent=true&q.op=OR?indent=true&q.op=OR&q=ProjectNameTH%3A` + keyword +`&q=ProjectKeyword%3A` + keyword +`&q=_text_%3A` + keyword +`&rows=180&start=0`
-    );
+      `http://localhost:8983/solr/thai_research/select?facet.field=ProjectYearSubmit&facet.field=OECD1&facet.field=SubmitDepProvinceTH&facet=true&indent=true&q.op=OR&q=ProjectNameTH%3A`+  keyword +`%20OR%0A_text_%3A`+ keyword +`&rows=180&start=0` 
+    
+      );
 
     res.status(200).json(data);
   } catch (error) {
@@ -97,14 +98,15 @@ app.get("/getDataByFact/:key/:value", async (req, res) => {
 });
 
 
-app.get("/getDataBoolean/:year/:province/:oecd", async (req, res) => {
+app.get("/getDataBoolean/:year/:province/:oecd/:keyword", async (req, res) => {
   const year = req.params.year;
   const province = req.params.province;
   const oecd = req.params.oecd;
+  const keyword = req.params.keyword; 
   try {
     const data = await sendRequestGetJson(
-      `http://localhost:8983/solr/thai_research/select?facet.field=ProjectYearSubmit&facet.field=OECD1&facet.field=SubmitDepProvinceTH&facet=true&fq=ProjectYearSubmit%3A`+ year +`&fq=SubmitDepProvinceTH%3A`+ province +`&indent=true&q.op=AND&q=OECD1%3A`+ oecd +`&rows=180&start=0` 
-    );
+      `http://localhost:8983/solr/thai_research/select?facet.field=ProjectYearSubmit&facet.field=OECD1&facet.field=SubmitDepProvinceTH&facet=true&fq=ProjectYearSubmit%3A`+ year +`&fq=SubmitDepProvinceTH%3A`+ province+`&fq=OECD1%3A`+ oecd +`&indent=true&q.op=OR&q=ProjectNameTH%3A`+  keyword  +`%20OR%0A_text_%3A`+ keyword +`&rows=180&start=0`      
+      );
 
     res.status(200).json(data);
   } catch (error) {
